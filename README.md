@@ -4,22 +4,25 @@
 
 Action Workflows to sign image for Unisoc/SPRD device.
 
+> [!Caution]  
+> The workflow isn't fully tested. Also, flashing takes risks. Thus, **IM NOT RESPONSIBLE FOR ANY DAMAGE TO YOUR DEVICES**
+
 # Introduce
 
-As I know, two sign method are used by Unisoc. Please choose different signature methods based on your SoC model.
+As I know, two sign method are used by Unisoc. Please choose different signature methods based on your SoC.
 
 ## AVBTOOL METHOD
 
 > [!NOTE]  
 > Workflow name: `Sign image (avbtool)`
 
-Avbtool is a tool to read AVB2.0 (or avb1.0 support?) signed image and sign an image. Avbtool method means using avbtool to sign the image. Check [here](https://www.hovatek.com/forum/thread-32664.html) and [here](https://www.hovatek.com/forum/thread-32674.html) if you want to know how does it work.
+Use `avbtool` to sign the image. Check [here](https://www.hovatek.com/forum/thread-32664.html) and [here](https://www.hovatek.com/forum/thread-32674.html) if you want to know how does it work.
 
 For example, **SC9832E/SL8541E** uses Android Verified Boot 2.0 to sign and verify the image. It should use avbtool method.
 
 Usually, if your device has vbmeta partition and it was not empty, you should use this method.
 
-If you want to further confirm, you can check the header of your boot image and vbmeta image. The boot image uses common header (`ANDROID!` in the first 8 bytes) but vbmeta uses a different header (`DHTB` in the first 4 bytes) that avbtool can not read it correctly. 
+If you want to further confirm, you can check if your boot image can be recognized by avbtool. Also, check if vbmeta has extra content starting with `DHTB`. It may appears before the common header or at the end of file.
 
 SoCs using this method:
 - SC9832e/SL8541e
@@ -30,13 +33,13 @@ SoCs using this method:
 > [!NOTE]  
 > Workflow name: `Sign image (Legacy)`
 
-I called it `Legacy method` before but that isn't correct. This method uses Unisoc's BSP sign tool to sign the image. 
+Use Unisoc's BSP sign tool to sign the image. 
 
 BSP sign method often uses on uboot, fdl1/2, etc., excluding boot and recovery image. But **SC9820E/SL8521E** uses this method to sign the boot image, including devices using Android 4.4 and Android 8.1. 
 
-I ain't sure, but if your device doesn't have vbmeta pertition or it was empty, you may need to use this method to sign your boot image.
+If your device doesn't have vbmeta pertition or it was empty, you may need to use this method to sign your boot image.
 
-If you want to further confirm, you can check the header of your boot image. The boot image uses `DHTB` for it's header instead of `ANDROID!` so that bootimg unpacker can't read it correctly (but magiskboot and AIK seems working normally!). Actually, `ANDROID!` has been moved backwards by 512 bytes.
+If you want to further confirm, you can check whether the boot image has extra content starting with `DHTB`. It usually appears before `!ANDROID` header.
 
 SoCs using this method:
 - SC9820e/SL8521e
@@ -68,7 +71,7 @@ You should provide `boot\recovery` image you want to sign. Original `vbmeta` ima
 
 ![image](.res/7.png)
 
-- The fourth parameter may be confusing. You can read back the boot/recovery partition of your device **correctly**. The size of the output file is the value of this parameter. **If you operate incorrectly, the size of the output file may change.**
+- The fourth parameter may be confusing. You can read back the boot/recovery partition of your device **without trimming zeros**. The size of the output file is the value of this parameter.
 
-5. **Just drink a tea and wait for a while. After a few seconds, the signed image will be uploaded to artifact. You can download it right now and flash into your device!**
+5. **It wont take much time. After few seconds, the signed image will be uploaded to artifact. You can download it right now and flash into your device!**
 ![image](.res/8.png)
