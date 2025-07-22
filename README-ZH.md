@@ -2,6 +2,9 @@
 
 一个给紫光展锐（下文叫它展讯）设备自动签名镜像的Github工作流。**应该写完了**
 
+> [!Caution]  
+> 这个工作流尚未完全测试，且刷机有风险，因此**本人不对你设备的任何损坏负责**
+
 # 介绍
 
 据我所知，展讯现在用了两种签名方法。请根据你的SoC型号选择正确的方法签名
@@ -11,13 +14,13 @@
 > [!NOTE]  
 > 对应的工作流名：`Sign image (avbtool)`
 
-Avbtool，顾名思义，就是处理avb2.0（或者avb1.0也行？）镜像用的。avbtool签名大法就是用avbtool给你的镜像签名。可以看[这个](https://www.hovatek.com/forum/thread-32664.html)和[这个](https://www.hovatek.com/forum/thread-32674.html)教程来了解签名的原理。
+用avbtool给你的镜像签名。可以看[这个](https://www.hovatek.com/forum/thread-32664.html)和[这个](https://www.hovatek.com/forum/thread-32674.html)教程来了解签名的原理。
 
 打个比方，**SC9832E/SL8541E**就得用这个方法签名，因为它采用了Android启动时验证2.0（就是avb2.0）来验证镜像。
 
 如果我没猜错的话，你这设备有vbmeta分区而且不是空的，那十有八九得用这方法了。
 
-如果想进一步确认的话，可以检查下boot和vbmeta的文件头。boot的文件头跟正常Android没啥区别（前8个字节是`ANDROID!`），但是vbmeta就被爆改了（前四个字节是`DHTB`），avbtool就读不了vbmeta了。实际上，真正的文件头被后移了512字节。
+想进一步确认的话，可以看看boot是否能被avbtool正常读取，并确认下vbmeta是否有以`DHTB`为开头的多余内容，可能在文件开头也可能在文件尾部
 
 目前已知使用该方法的SoC：
 - SC9832e/SL8541e
@@ -28,13 +31,13 @@ Avbtool，顾名思义，就是处理avb2.0（或者avb1.0也行？）镜像用�
 > [!NOTE]  
 > 对应的工作流名：`Sign image (Legacy)`
 
-之前起名为`Legacy Method`实际上并不严谨。这个方法将用展讯自己的BSP签名工具签名镜像。
+用展讯自己的BSP签名工具签名镜像。
 
 `FDL1/2, uboot`等等BSP镜像都会用展讯的BSP签名工具签名，但一般不会用来签boot/recovery镜像。只不过，**SC9820E/SL8521E**用了这种方式签名boot/recovery镜像，包括安卓4.4和8.1系统。可能还有其他SoC也会用到，不过我暂时不清楚。
 
 如果我没猜错的话，你这设备没vbmeta分区，或者vbmeta分区是空的，那十有八九得用这方法了。
 
-想进一步确认的话，可以检查下boot的文件头。boot的文件头跟上文vbmeta一样被爆改成`DHTB`了，那些boot解包工具找不到`ANDROID!`文件头就炸了（但magiskboot和aik似乎正常）。实际上，`ANDROID!`也被后移了512字节。vbmeta就没必要看了吧，都没有了看个几把（
+想进一步确认的话，可以检查下boot是否有一段多出来的内容，以`DHTB`开头，通常在文件开头，`ANDROID!`文件头前面
 
 目前已知使用该方法的SoC：
 - SC9820e/SL8521e
