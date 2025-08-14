@@ -29,11 +29,11 @@ on:
         default: '8'
         type: choice
         options:
-        - 8
-        - 9
-        - 10
-        - 11
-        - 13
+        - '8'
+        - '9'
+        - '10'
+        - '11'
+        - '13'
         - 'vbmeta has no DHTB header, no need for padding'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -53,8 +53,8 @@ jobs:
 
       - name: Get image
         run: | 
-          wget ${{ github.event.inputs.BOOT_URL }} -O ./aik/${{ github.event.inputs.TARGET }}.img
-          wget ${{ github.event.inputs.VBM_URL }} -O ./avbtool/vbmeta.img
+          wget "${{ github.event.inputs.BOOT_URL }}" -O ./aik/${{ github.event.inputs.TARGET }}.img
+          wget "${{ github.event.inputs.VBM_URL }}" -O ./avbtool/vbmeta.img
           
       - name: Remove invalid content in your image
         run: |
