@@ -15,6 +15,8 @@ As I know, two sign method are used by Unisoc. Please choose different signature
 
 > [!NOTE]  
 > Workflow name: `Sign image (avbtool)`
+>
+> Files need to be uploaded : `partition-u-want-to-sign.img` `vbmeta.img`
 
 Use `avbtool` to sign the image. Check [here](https://www.hovatek.com/forum/thread-32664.html) and [here](https://www.hovatek.com/forum/thread-32674.html) if you want to know how does it work.
 
@@ -32,6 +34,8 @@ SoCs using this method:
 
 > [!NOTE]  
 > Workflow name: `Sign image (Legacy)`
+>
+> Files need to be uploaded : `partition-u-want-to-sign.img`
 
 Use Unisoc's BSP sign tool to sign the image. 
 
@@ -53,9 +57,21 @@ You should provide `boot\recovery` image you want to sign. Original `vbmeta` ima
 1. **Use `Fork` or `Use this template` to clone this reposity to your personal account**
 ![image](.res/1.png)
 
-2. **Upload your image to somewhere that can get the DIRECT LINK to your image. For example, I upload my image to this reposity and used "View raw" to get the link.**
+2. **Upload your image. There are 2 methods. The conventional one is to upload it to somewhere that can get the DIRECT LINK to your image. For example, I upload my image to this reposity and used "View raw" to get the link.**
 ![image](.res/2.png)
 ![image](.res/3.png)
+
+- **However, I did upload the image to my repo, thus the workflow ABSOLUTELY has the ability to get them. Just name it correctly according to the instructions in the following captures.**
+
+- If using avbtool method:
+
+![image](.res/9.png)
+
+a bit messy, sorry for that
+
+- If using BSP sign method:
+
+Rename your file to `image.img`. That's all.
 
 3. **Open the `Actions` tab and choose a workflow. Read the [introduce](#introduce) to help you make decision.**
 ![image](.res/4.png)
@@ -71,7 +87,7 @@ You should provide `boot\recovery` image you want to sign. Original `vbmeta` ima
 
 ![image](.res/7.png)
 
-- The fourth parameter may be confusing. You can read back the boot/recovery partition of your device **without trimming zeros**. The size of the output file is the value of this parameter.
+- The fourth parameter may be confusing. You can read back the boot/recovery partition of your device **without trimming zeros**. The size of the output file should be the value of this parameter.
 
 5. **It wont take much time. After few seconds, the signed image will be uploaded to artifact. You can download it right now and flash into your device!**
 ![image](.res/8.png)
