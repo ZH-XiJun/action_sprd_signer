@@ -39,8 +39,8 @@ jobs:
 
       - name: Get image
         run: | 
-          if [ -z "${{ inputs.BOOT_URL }}" ]; then cp ${{ inputs.TARGET }}.img ./aik/${{ inputs.TARGET }}.img else wget "${{ inputs.BOOT_URL }}" -O ./aik/${{ inputs.TARGET }}.img fi
-          if [ -z "${{ inputs.VBM_URL }}" ]; then cp vbmeta.img ./avbtool/vbmeta.img else wget "${{ inputs.VBM_URL }}" -O ./avbtool/vbmeta.img fi
+          if [ -z "${{ inputs.BOOT_URL }}" ]; then cp ${{ inputs.TARGET }}.img ./aik/${{ inputs.TARGET }}.img else wget "${{ inputs.BOOT_URL }}" -O ./aik/${{ inputs.TARGET }}.img; fi
+          if [ -z "${{ inputs.VBM_URL }}" ]; then cp vbmeta.img ./avbtool/vbmeta.img else wget "${{ inputs.VBM_URL }}" -O ./avbtool/vbmeta.img; fi
           
       - name: Remove invalid content in your image
         run: |
