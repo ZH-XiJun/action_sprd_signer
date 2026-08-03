@@ -16,7 +16,7 @@ jobs:
  
       - name: Get image
         run: |
-          if [ -z "${{ inputs.IMAGE_URL }}" ]; then cp image.img ./aik/1.img else wget "${{ inputs.IMAGE_URL }}" -O ./aik/1.img; fi
+          if [ -z "${{ inputs.IMAGE_URL }}" ]; then cp image.img ./aik/1.img; else wget "${{ inputs.IMAGE_URL }}" -O ./aik/1.img; fi
 
       - name: Remove invalid content in your image
         run: |
