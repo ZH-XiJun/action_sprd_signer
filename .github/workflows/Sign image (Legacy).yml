@@ -5,7 +5,7 @@ on:
     inputs:
       IMAGE_URL:
         description: 'URL of the image you want to sign. Leave blank to use the image in your repo'
-        required: true
+        required: false
         default: ''
 jobs:
   sign:
