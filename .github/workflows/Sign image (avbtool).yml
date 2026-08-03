@@ -1,19 +1,15 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Sign image (avbtool)
 
-# Controls when the workflow will run
 on:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
       BOOT_URL:
-        description: 'URL of the boot/recovery image you want to sign'
-        required: true
+        description: 'URL of the boot/recovery image you want to sign. Leave blank to use the image in your repo'
+        required: false
         default: ''
       VBM_URL:
-        description: 'URL of the vbmeta image in your device'
-        required: true
+        description: 'URL of the vbmeta image in your device. Leave blank to use the image in your repo'
+        required: false
         default: ''
       TARGET:
         description: 'Which partition you want to sign?'
@@ -35,32 +31,22 @@ on:
         - '11'
         - '13'
         - 'vbmeta has no DHTB header, no need for padding'
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   avb-sign:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-      - name: Prepare envionment
-        run: |
-          git clone https://github.com/SebaUbuntu/AIK-Linux-mirror aik
-          sudo apt install python3 -y
 
       - name: Get image
         run: | 
-          wget "${{ github.event.inputs.BOOT_URL }}" -O ./aik/${{ github.event.inputs.TARGET }}.img
-          wget "${{ github.event.inputs.VBM_URL }}" -O ./avbtool/vbmeta.img
+          if [ -z "${{ inputs.BOOT_URL }}" ]; then cp ${{ inputs.TARGET }}.img ./aik/${{ inputs.TARGET }}.img else wget "${{ inputs.BOOT_URL }}" -O ./aik/${{ inputs.TARGET }}.img fi
+          if [ -z "${{ inputs.VBM_URL }}" ]; then cp vbmeta.img ./avbtool/vbmeta.img else wget "${{ inputs.VBM_URL }}" -O ./avbtool/vbmeta.img fi
           
       - name: Remove invalid content in your image
         run: |
-          ./unpackimg.sh ${{ github.event.inputs.TARGET }}.img
+          ./unpackimg.sh ${{ inputs.TARGET }}.img
           ./repackimg.sh
-          cp -v *-new.img ../avbtool/${{ github.event.inputs.TARGET }}.img
+          cp -v *-new.img ../avbtool/${{ inputs.TARGET }}.img
         working-directory: aik
 
       - name: Sign the image

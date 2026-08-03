@@ -1,32 +1,22 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Sign image (Legacy)
 
-# Controls when the workflow will run
 on:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
       IMAGE_URL:
-        description: 'URL of the image you want to sign'
+        description: 'URL of the image you want to sign. Leave blank to use the image in your repo'
         required: true
         default: ''
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  sign:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
-      - name: Get AIK
-        run: git clone https://github.com/SebaUbuntu/AIK-Linux-mirror aik
  
       - name: Get image
-        run: wget ${{ github.event.inputs.IMAGE_URL }} -O ./aik/1.img
+        run: |
+          if [ -z "${{ inputs.IMAGE_URL }}" ]; then cp image.img ./aik/1.img else wget "${{ inputs.IMAGE_URL }}" -O ./aik/1.img fi
 
       - name: Remove invalid content in your image
         run: |
